@@ -1,13 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { onFilter, getFilter } from '../redux/filterSlice';
+import { onFilter } from '../redux/filterSlice';
+import { selectFilter } from '../redux/selectors';
 
 export const Filter = () => {
-  const filter = useSelector(getFilter);
+  const filter = useSelector(selectFilter);
   const dispatch = useDispatch();
 
   return (
     <input
-      onChange={e => dispatch(onFilter({ filter: e.target.value }))}
+      onChange={e => dispatch(onFilter(e.target.value))}
       value={filter}
       type="text"
       placeholder="Search"

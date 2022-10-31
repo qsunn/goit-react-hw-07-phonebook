@@ -1,31 +1,43 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { persistReducer } from 'redux-persist';
-import { INITIAL_CONTACTS } from "data/initialContacts";
-import storage from 'redux-persist/lib/storage';
+import { fetchContacts, addContact, deleteContact } from "./operation";
+
+const handlePending = state => {
+    state.isLoading = true;
+    state.error = null;
+}
+
+const handleRejected = (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+}
 
 const contactsSlice = createSlice({
     name: 'contacts',
-    initialState: { data: INITIAL_CONTACTS },
-    reducers: {
-        addContact(state, action) {
-            state.data.push(action.payload.contact);
+    initialState: {
+        items: [],
+        isLoading: false,
+        error: null,
+    },
+    extraReducers: {
+        [fetchContacts.pending]: handlePending,
+        [fetchContacts.rejected]: handleRejected,
+        [fetchContacts.fulfilled](state, action) {
+            state.isLoading = false;
+            state.items = action.payload;
         },
-        deleteContact(state, action) {
-            state.data = state.data.filter(contact => contact.id !== action.payload.id);
+        [addContact.pending]: handlePending,
+        [addContact.rejected]: handleRejected,
+        [addContact.fulfilled](state, action) {
+            state.isLoading = false;
+            state.items.push(action.payload);
+        },
+        [deleteContact.pending]: handlePending,
+        [deleteContact.rejected]: handleRejected,
+        [deleteContact.fulfilled](state, action) {
+            state.isLoading = false;
+            state.items = state.items.filter(item => item.id !== action.payload.id);
         },
     }
 })
 
-const persistConfig = {
-    key: 'contacts',
-    storage
-}
-
-export const contactsReducer = persistReducer(
-    persistConfig,
-    contactsSlice.reducer
-);
-
-export const { addContact, deleteContact } = contactsSlice.actions;
-
-export const getContacts = state => state.contacts.data;
+export const contactsReducer = contactsSlice.reducer;
