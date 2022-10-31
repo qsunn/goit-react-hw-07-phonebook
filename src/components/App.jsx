@@ -10,12 +10,12 @@ import { Filter } from './Filter';
 export const App = () => {
   const dispatch = useDispatch();
 
-  const { items, isLoading, error } = useSelector(selectContacts);
+  const { isLoading, error } = useSelector(selectContacts);
 
   const status = {
     pending: isLoading,
-    fulfilled: items && !isLoading && !error,
     rejected: error && !isLoading,
+    fulfilled: !isLoading && !error,
   };
 
   useEffect(() => {
