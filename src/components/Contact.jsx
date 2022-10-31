@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/operation';
+import { deleteContact } from 'redux/operations';
 import { PropTypes } from 'prop-types';
 
 export const Contact = ({ contact }) => {
